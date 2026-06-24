@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmaInventory Pro — Productos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar__brand">
+        <h1>FarmaInventory</h1>
+        <span>Pro v1.0</span>
+    </div>
+    <nav class="sidebar__nav">
+        <a href="index.html"     class="nav-item"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+        <a href="productos.html" class="nav-item active"><i class="ti ti-pill"></i> Productos</a>
+        <a href="alertas.html"   class="nav-item"><i class="ti ti-bell"></i> Alertas</a>
+    </nav>
+    <div class="sidebar__footer">Sistema Farmacéutico © 2025</div>
+</aside>
+
+<div class="main">
+    <header class="topbar">
+        <span class="topbar__title">Gestión de Productos</span>
+        <div class="topbar__right">
+            <button class="btn btn--primary" onclick="abrirModalCrear()">
+                <i class="ti ti-plus"></i> Nuevo Producto
+            </button>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="card">
+            <div class="card__header">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class="ti ti-search"></i>
+                        <input type="text" id="buscador" placeholder="Buscar por nombre o código...">
+                    </div>
+                    <select id="filtro-estado" class="btn btn--ghost" style="padding:7px 12px">
+                        <option value="">Todos los estados</option>
+                        <option value="Disponible">Disponible</option>
+                        <option value="Stock Bajo">Stock Bajo</option>
+                        <option value="Agotado">Agotado</option>
+                    </select>
+                </div>
+                <span id="contador-productos" style="font-size:12px;color:#64748b;white-space:nowrap"></span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Proveedor</th>
+                            <th>Precio Venta</th>
+                            <th>Stock</th>
+                            <th>Vencimiento</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-productos">
+                        <tr><td colspan="9" style="text-align:center;padding:40px;color:#94a3b8">Cargando productos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ── Modal Crear / Editar ── -->
+<div class="modal-overlay" id="modal-producto">
+    <div class="modal">
+        <div class="modal__header">
+            <h3 id="modal-titulo">Nuevo Producto</h3>
+            <button class="btn btn--ghost btn--sm" onclick="cerrarModal('modal-producto')">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <div class="modal__body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Código de Barras *</label>
+                    <input type="text" id="f-codigo" placeholder="7702001006">
+                </div>
+                <div class="form-group">
+                    <label>Nombre del Producto *</label>
+                    <input type="text" id="f-nombre" placeholder="Acetaminofén 500mg x10">
+                </div>
+                <div class="form-group full">
+                    <label>Descripción</label>
+                    <textarea id="f-descripcion" rows="2" placeholder="Descripción del medicamento..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Categoría *</label>
+                    <select id="f-categoria">
+                        <option value="">Seleccionar...</option>
+                        <option value="1">Analgésicos</option>
+                        <option value="2">Antibióticos</option>
+                        <option value="3">Vitaminas</option>
+                        <option value="4">Antiinflamatorios</option>
+                        <option value="5">Dermatológicos</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Proveedor *</label>
+                    <select id="f-proveedor">
+                        <option value="">Seleccionar...</option>
+                        <option value="1">Laboratorios Bayer Colombia</option>
+                        <option value="2">Pfizer Colombia SAS</option>
+                        <option value="3">Genfar SA</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Precio Compra (COP) *</label>
+                    <input type="number" id="f-precio-compra" placeholder="5000" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Precio Venta (COP) *</label>
+                    <input type="number" id="f-precio-venta" placeholder="12000" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Stock Actual</label>
+                    <input type="number" id="f-stock-actual" placeholder="100" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Stock Mínimo</label>
+                    <input type="number" id="f-stock-min" placeholder="10" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Stock Máximo</label>
+                    <input type="number" id="f-stock-max" placeholder="500" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Unidad de Medida</label>
+                    <select id="f-unidad">
+                        <option value="Unidad">Unidad</option>
+                        <option value="Caja">Caja</option>
+                        <option value="Frasco">Frasco</option>
+                        <option value="Tubo">Tubo</option>
+                        <option value="Ampolla">Ampolla</option>
+                        <option value="Blíster">Blíster</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha Vencimiento</label>
+                    <input type="date" id="f-vencimiento">
+                </div>
+                <div class="form-group full" style="flex-direction:row;align-items:center;gap:10px">
+                    <input type="checkbox" id="f-receta" style="width:16px;height:16px">
+                    <label for="f-receta" style="font-size:13px;font-weight:500;cursor:pointer">
+                        Requiere receta médica
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal__footer">
+            <button class="btn btn--ghost" onclick="cerrarModal('modal-producto')">Cancelar</button>
+            <button class="btn btn--primary" onclick="guardarProducto()">
+                <i class="ti ti-device-floppy"></i> Guardar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Modal Movimiento de Stock ── -->
+<div class="modal-overlay" id="modal-movimiento">
+    <div class="modal" style="max-width:400px">
+        <div class="modal__header">
+            <h3>Movimiento de Stock</h3>
+            <button class="btn btn--ghost btn--sm" onclick="cerrarModal('modal-movimiento')">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <div class="modal__body">
+            <p id="mov-producto-nombre" style="font-weight:600;margin-bottom:16px;color:#2563eb"></p>
+            <div class="form-grid" style="grid-template-columns:1fr">
+                <div class="form-group">
+                    <label>Tipo de Movimiento *</label>
+                    <select id="mov-tipo">
+                        <option value="Entrada">Entrada (agregar stock)</option>
+                        <option value="Salida">Salida (reducir stock)</option>
+                        <option value="Ajuste">Ajuste (establecer cantidad)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad *</label>
+                    <input type="number" id="mov-cantidad" placeholder="0" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Motivo</label>
+                    <input type="text" id="mov-motivo" placeholder="Ej: Compra a proveedor, Venta, Ajuste inventario...">
+                </div>
+            </div>
+        </div>
+        <div class="modal__footer">
+            <button class="btn btn--ghost" onclick="cerrarModal('modal-movimiento')">Cancelar</button>
+            <button class="btn btn--success" onclick="confirmarMovimiento()">
+                <i class="ti ti-check"></i> Confirmar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Modal Confirmar Eliminar ── -->
+<div class="modal-overlay" id="modal-eliminar">
+    <div class="modal" style="max-width:380px">
+        <div class="modal__header">
+            <h3>Eliminar Producto</h3>
+            <button class="btn btn--ghost btn--sm" onclick="cerrarModal('modal-eliminar')">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <div class="modal__body">
+            <p style="font-size:14px;color:#475569;line-height:1.6">
+                ¿Estás seguro de eliminar <strong id="eliminar-nombre"></strong>?
+                Esta acción lo desactivará del sistema.
+            </p>
+        </div>
+        <div class="modal__footer">
+            <button class="btn btn--ghost" onclick="cerrarModal('modal-eliminar')">Cancelar</button>
+            <button class="btn btn--danger" onclick="confirmarEliminar()">
+                <i class="ti ti-trash"></i> Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="js/config.js"></script>
+<script src="js/productos.js"></script>
+</body>
+</html>

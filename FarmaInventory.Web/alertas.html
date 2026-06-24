@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmaInventory Pro — Alertas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar__brand">
+        <h1>FarmaInventory</h1>
+        <span>Pro v1.0</span>
+    </div>
+    <nav class="sidebar__nav">
+        <a href="index.html"     class="nav-item"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+        <a href="productos.html" class="nav-item"><i class="ti ti-pill"></i> Productos</a>
+        <a href="alertas.html"   class="nav-item active"><i class="ti ti-bell"></i> Alertas</a>
+    </nav>
+    <div class="sidebar__footer">Sistema Farmacéutico © 2025</div>
+</aside>
+
+<div class="main">
+    <header class="topbar">
+        <span class="topbar__title">Alertas del Sistema</span>
+        <div class="topbar__right">
+            <button class="btn btn--primary" onclick="generarReportePDF()">
+                <i class="ti ti-file-type-pdf"></i> Exportar Reporte PDF
+            </button>
+        </div>
+    </header>
+
+    <main class="content">
+
+        <!-- Stats alertas -->
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px">
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--red"><i class="ti ti-circle-x"></i></div>
+                <div class="stat-card__info"><p>Agotados</p><h2 id="stat-agotados">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--yellow"><i class="ti ti-alert-triangle"></i></div>
+                <div class="stat-card__info"><p>Stock Bajo</p><h2 id="stat-stock-bajo">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--blue"><i class="ti ti-bell"></i></div>
+                <div class="stat-card__info"><p>Total Activas</p><h2 id="stat-total-alertas">—</h2></div>
+            </div>
+        </div>
+
+        <!-- Tabla alertas -->
+        <div class="card">
+            <div class="card__header">
+                <h3>Alertas Activas</h3>
+                <div class="toolbar">
+                    <select id="filtro-tipo" class="btn btn--ghost" style="padding:7px 12px">
+                        <option value="">Todos los tipos</option>
+                        <option value="Agotado">Agotado</option>
+                        <option value="StockBajo">Stock Bajo</option>
+                        <option value="Vencimiento">Vencimiento</option>
+                    </select>
+                    <button class="btn btn--ghost btn--sm" onclick="cargarAlertas()">
+                        <i class="ti ti-refresh"></i> Actualizar
+                    </button>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Producto</th>
+                            <th>Stock Actual</th>
+                            <th>Mensaje</th>
+                            <th>Fecha</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-alertas">
+                        <tr><td colspan="6" style="text-align:center;padding:40px;color:#94a3b8">Cargando alertas...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Reporte inventario completo -->
+        <div class="card" style="margin-top:20px">
+            <div class="card__header">
+                <h3>Reporte de Inventario Completo</h3>
+                <button class="btn btn--primary" onclick="generarReportePDF()">
+                    <i class="ti ti-download"></i> Descargar PDF
+                </button>
+            </div>
+            <div class="card__body">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px" id="resumen-inventario">
+                    <div style="text-align:center;padding:20px;background:#f8fafc;border-radius:8px">
+                        <p style="font-size:12px;color:#64748b;margin-bottom:6px">Total Productos</p>
+                        <h3 id="rep-total" style="font-size:28px;font-weight:700">—</h3>
+                    </div>
+                    <div style="text-align:center;padding:20px;background:#f8fafc;border-radius:8px">
+                        <p style="font-size:12px;color:#64748b;margin-bottom:6px">Valor en Inventario</p>
+                        <h3 id="rep-valor" style="font-size:22px;font-weight:700;color:#2563eb">—</h3>
+                    </div>
+                    <div style="text-align:center;padding:20px;background:#f8fafc;border-radius:8px">
+                        <p style="font-size:12px;color:#64748b;margin-bottom:6px">Requieren Atención</p>
+                        <h3 id="rep-atencion" style="font-size:28px;font-weight:700;color:#dc2626">—</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+<script src="js/config.js"></script>
+<script src="js/alertas.js"></script>
+</body>
+</html>

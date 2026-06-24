@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmaInventory Pro — Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar__brand">
+        <h1>FarmaInventory</h1>
+        <span>Pro v1.0</span>
+    </div>
+    <nav class="sidebar__nav">
+        <a href="index.html"    class="nav-item active"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+        <a href="productos.html" class="nav-item"><i class="ti ti-pill"></i> Productos</a>
+        <a href="alertas.html"   class="nav-item"><i class="ti ti-bell"></i> Alertas</a>
+    </nav>
+    <div class="sidebar__footer">Sistema Farmacéutico © 2025</div>
+</aside>
+
+<div class="main">
+    <header class="topbar">
+        <span class="topbar__title">Dashboard</span>
+        <div class="topbar__right">
+            <span id="fecha-hoy" style="font-size:13px;color:#64748b"></span>
+            <a href="alertas.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;color:inherit;font-size:13px">
+                <i class="ti ti-bell" style="font-size:18px"></i>
+                <span class="badge-alert" id="badge-alertas">0</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="content">
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--blue"><i class="ti ti-pill"></i></div>
+                <div class="stat-card__info"><p>Total Productos</p><h2 id="stat-total">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--green"><i class="ti ti-circle-check"></i></div>
+                <div class="stat-card__info"><p>Disponibles</p><h2 id="stat-disponibles">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--yellow"><i class="ti ti-alert-triangle"></i></div>
+                <div class="stat-card__info"><p>Stock Bajo</p><h2 id="stat-bajo">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--red"><i class="ti ti-circle-x"></i></div>
+                <div class="stat-card__info"><p>Agotados</p><h2 id="stat-agotados">—</h2></div>
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+            <!-- Tabla resumen -->
+            <div class="card">
+                <div class="card__header">
+                    <h3>Productos críticos</h3>
+                    <a href="productos.html" class="btn btn--ghost btn--sm">Ver todos</a>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-criticos">
+                            <tr><td colspan="3" style="text-align:center;color:#94a3b8;padding:24px">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Alertas recientes -->
+            <div class="card">
+                <div class="card__header">
+                    <h3>Alertas activas</h3>
+                    <a href="alertas.html" class="btn btn--ghost btn--sm">Ver todas</a>
+                </div>
+                <div class="card__body" id="lista-alertas-dash">
+                    <p style="color:#94a3b8;font-size:13px">Cargando...</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="js/config.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
