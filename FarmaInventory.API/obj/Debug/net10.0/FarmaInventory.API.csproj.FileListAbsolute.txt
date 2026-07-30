@@ -61,3 +61,4 @@ C:\Users\icome\OneDrive\Documentos\BODEGA - JEHE\JEHE\FarmaInventory\FarmaInvent
 C:\Users\icome\OneDrive\Documentos\BODEGA - JEHE\JEHE\FarmaInventory\FarmaInventory.API\obj\Debug\net10.0\FarmaInventory.API.pdb
 C:\Users\icome\OneDrive\Documentos\BODEGA - JEHE\JEHE\FarmaInventory\FarmaInventory.API\obj\Debug\net10.0\FarmaInventory.API.genruntimeconfig.cache
 C:\Users\icome\OneDrive\Documentos\BODEGA - JEHE\JEHE\FarmaInventory\FarmaInventory.API\obj\Debug\net10.0\ref\FarmaInventory.API.dll
+C:\Users\icome\OneDrive\Documentos\BODEGA - JEHE\JEHE\FarmaInventory\FarmaInventory.API\obj\Debug\net10.0\FarmaInventory.API.sourcelink.json
