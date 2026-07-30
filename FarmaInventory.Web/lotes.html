@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmaInventory Pro — Lotes</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar__brand">
+        <h1>FarmaInventory</h1>
+    </div>
+    <nav class="sidebar__nav">
+        <a href="index.html" class="nav-item active">
+            <i class="ti ti-layout-dashboard"></i> Dashboard
+        </a>
+
+        <div class="nav-group">
+            <span class="nav-group__label">Inventario</span>
+            <a href="productos.html"   class="nav-item"><i class="ti ti-pill"></i> Productos</a>
+            <a href="lotes.html"       class="nav-item"><i class="ti ti-package"></i> Lotes</a>
+            <a href="kardex.html"      class="nav-item"><i class="ti ti-history"></i> Kardex</a>
+            <a href="proveedores.html" class="nav-item"><i class="ti ti-truck"></i> Proveedores</a>
+        </div>
+
+        <div class="nav-group">
+            <span class="nav-group__label">Control</span>
+            <a href="alertas.html"   class="nav-item"><i class="ti ti-bell"></i> Alertas</a>
+            <a href="auditoria.html" class="nav-item"><i class="ti ti-shield-check"></i> Auditoría</a>
+        </div>
+    </nav>
+    <div class="sidebar__footer">Sistema Farmacéutico © 2026</div>
+</aside>
+
+<div class="main">
+    <header class="topbar">
+        <span class="topbar__title">Gestión de Lotes e INVIMA</span>
+        <div class="topbar__right">
+            <button class="btn btn--primary" onclick="abrirModalCrear()">
+                <i class="ti ti-plus"></i> Nuevo Lote
+            </button>
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleTema()" title="Modo oscuro">
+    <i class="ti ti-moon"></i>
+</button>
+        </div>
+    </header>
+
+    <main class="content">
+
+        <!-- Stats -->
+        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--green"><i class="ti ti-package"></i></div>
+                <div class="stat-card__info"><p>Vigentes</p><h2 id="lt-vigentes">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--blue"><i class="ti ti-clock"></i></div>
+                <div class="stat-card__info"><p>Próximos a vencer</p><h2 id="lt-proximos">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--yellow"><i class="ti ti-alert-triangle"></i></div>
+                <div class="stat-card__info"><p>Críticos (&lt;30 días)</p><h2 id="lt-criticos">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--red"><i class="ti ti-calendar-x"></i></div>
+                <div class="stat-card__info"><p>Vencidos</p><h2 id="lt-vencidos">—</h2></div>
+            </div>
+        </div>
+
+        <!-- Alertas vencimiento rápidas -->
+        <div class="card" style="margin-bottom:16px" id="card-alertas-venc">
+            <div class="card__header">
+                <h3><i class="ti ti-alert-triangle" style="color:#d97706"></i> Lotes que requieren atención</h3>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <label style="font-size:12px;color:#64748b">Alertar en</label>
+                    <select id="dias-alerta" class="btn btn--ghost" style="padding:5px 10px;font-size:12px" onchange="cargarAlertasVencimiento()">
+                        <option value="30">30 días</option>
+                        <option value="60">60 días</option>
+                        <option value="90" selected>90 días</option>
+                        <option value="180">180 días</option>
+                    </select>
+                </div>
+            </div>
+            <div id="lista-alertas-venc" class="card__body">
+                <p style="color:#94a3b8;font-size:13px">Cargando...</p>
+            </div>
+        </div>
+
+        <!-- Tabla lotes -->
+        <div class="card">
+            <div class="card__header">
+                <h3>Todos los Lotes</h3>
+                <div class="toolbar">
+                    <div class="search-box">
+                        <i class="ti ti-search"></i>
+                        <input type="text" id="filtro-lote" placeholder="Buscar producto o lote...">
+                    </div>
+                    <select id="filtro-estado-lote" class="btn btn--ghost" style="padding:7px 12px">
+                        <option value="">Todos los estados</option>
+                        <option value="Vigente">Vigente</option>
+                        <option value="Próximo">Próximo</option>
+                        <option value="Crítico">Crítico</option>
+                        <option value="Vencido">Vencido</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>N° Lote</th>
+                            <th>INVIMA</th>
+                            <th>Fabricación</th>
+                            <th>Vencimiento</th>
+                            <th>Días</th>
+                            <th>Cantidad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-lotes">
+                        <tr><td colspan="9" style="text-align:center;padding:40px;color:#94a3b8">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Modal Crear Lote -->
+<div class="modal-overlay" id="modal-lote">
+    <div class="modal" style="max-width:520px">
+        <div class="modal__header">
+            <h3>Registrar Nuevo Lote</h3>
+            <button class="btn btn--ghost btn--sm" onclick="cerrarModal('modal-lote')">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <div class="modal__body">
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Producto *</label>
+                    <select id="lote-producto"></select>
+                </div>
+                <div class="form-group">
+                    <label>Número de Lote *</label>
+                    <input type="text" id="lote-numero" placeholder="LOT-2025-001">
+                </div>
+                <div class="form-group">
+                    <label>Registro INVIMA</label>
+                    <input type="text" id="lote-invima" placeholder="INVIMA-2020M-0012345">
+                </div>
+                <div class="form-group">
+                    <label>Fecha Fabricación</label>
+                    <input type="date" id="lote-fabricacion">
+                </div>
+                <div class="form-group">
+                    <label>Fecha Vencimiento *</label>
+                    <input type="date" id="lote-vencimiento">
+                </div>
+                <div class="form-group">
+                    <label>Cantidad Inicial *</label>
+                    <input type="number" id="lote-cantidad" placeholder="100" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Precio Compra (COP)</label>
+                    <input type="number" id="lote-precio" placeholder="5000" min="0">
+                </div>
+            </div>
+        </div>
+        <div class="modal__footer">
+            <button class="btn btn--ghost" onclick="cerrarModal('modal-lote')">Cancelar</button>
+            <button class="btn btn--primary" onclick="guardarLote()">
+                <i class="ti ti-device-floppy"></i> Registrar Lote
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal-overlay" id="modal-eliminar-lote">
+    <div class="modal" style="max-width:360px">
+        <div class="modal__header">
+            <h3>Eliminar Lote</h3>
+            <button class="btn btn--ghost btn--sm" onclick="cerrarModal('modal-eliminar-lote')">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <div class="modal__body">
+            <p style="font-size:14px;color:#475569;line-height:1.6">
+                ¿Eliminar el lote <strong id="eliminar-lote-numero"></strong>? Esta acción no se puede deshacer.
+            </p>
+        </div>
+        <div class="modal__footer">
+            <button class="btn btn--ghost" onclick="cerrarModal('modal-eliminar-lote')">Cancelar</button>
+            <button class="btn btn--danger" onclick="confirmarEliminarLote()">
+                <i class="ti ti-trash"></i> Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="js/config.js"></script>
+<script src="js/lotes.js"></script>
+<script src="js/theme.js"></script>
+</body>
+</html>

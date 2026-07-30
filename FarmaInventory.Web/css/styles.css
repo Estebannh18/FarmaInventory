@@ -385,3 +385,471 @@ input:focus, select:focus, textarea:focus {
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ══════════════════════════════════════
+   FASE 1 — Jerarquía visual
+══════════════════════════════════════ */
+
+/* ── Chips de categoría ── */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.chip--analgesico    { background: #ede9fe; color: #6d28d9; }
+.chip--antibiotico   { background: #fce7f3; color: #9d174d; }
+.chip--vitamina      { background: #d1fae5; color: #065f46; }
+.chip--antiinflamatorio { background: #ffedd5; color: #9a3412; }
+.chip--dermatologico { background: #dbeafe; color: #1e40af; }
+.chip--default       { background: #f1f5f9; color: #475569; }
+
+/* ── Barra de stock ── */
+.stock-bar-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 110px;
+}
+
+.stock-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.stock-bar-labels .val {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.stock-bar-labels .max {
+    font-size: 10px;
+    color: #94a3b8;
+}
+
+.stock-bar-track {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+}
+
+.stock-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width .4s ease;
+}
+
+.stock-bar-fill--green  { background: #16a34a; }
+.stock-bar-fill--yellow { background: #d97706; }
+.stock-bar-fill--red    { background: #dc2626; }
+
+.stock-bar-min {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: #0f172a;
+    border-radius: 1px;
+    opacity: .35;
+}
+
+/* ── Vencimiento con colores ── */
+.venc {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 6px;
+}
+
+.venc--ok      { background: #f0fdf4; color: #16a34a; }
+.venc--warning { background: #fefce8; color: #ca8a04; }
+.venc--danger  { background: #fff1f2; color: #e11d48; }
+.venc--none    { color: #94a3b8; font-size: 11px; }
+
+/* ── Skeleton loading ── */
+.skeleton {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+@keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-row td > .skeleton {
+    height: 14px;
+    width: 80%;
+}
+
+/* ══════════════════════════════════════
+   SIDEBAR — Grupos de navegación
+══════════════════════════════════════ */
+.nav-group {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #1e293b;
+}
+
+.nav-group__label {
+    display: block;
+    padding: 6px 20px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #475569;
+}
+
+/* ══════════════════════════════════════
+   MODO OSCURO — Versión mejorada
+══════════════════════════════════════ */
+[data-theme="dark"] {
+    --primary:      #3b82f6;
+    --primary-dark: #2563eb;
+    --success:      #22c55e;
+    --warning:      #f59e0b;
+    --danger:       #ef4444;
+    --bg:           #0f172a;
+    --surface:      #1e293b;
+    --border:       #334155;
+    --text:         #f1f5f9;
+    --text-muted:   #94a3b8;
+}
+
+[data-theme="dark"] body        { background: #0f172a; color: #f1f5f9; }
+[data-theme="dark"] .main       { background: #0f172a; }
+
+/* Sidebar */
+[data-theme="dark"] .sidebar         { background: #020617; border-right: 1px solid #1e293b; }
+[data-theme="dark"] .sidebar__brand  { border-bottom-color: #1e293b; }
+[data-theme="dark"] .sidebar__brand h1 { color: #f8fafc; }
+[data-theme="dark"] .sidebar__footer { color: #334155; }
+[data-theme="dark"] .nav-group       { border-top-color: #1e293b; }
+[data-theme="dark"] .nav-group__label{ color: #334155; }
+[data-theme="dark"] .nav-item        { color: #64748b; }
+[data-theme="dark"] .nav-item:hover,
+[data-theme="dark"] .nav-item.active { background: #0f172a; color: #f1f5f9; border-left-color: #3b82f6; }
+
+/* Topbar */
+[data-theme="dark"] .topbar          { background: #1e293b; border-bottom-color: #334155; }
+[data-theme="dark"] .topbar__title   { color: #f1f5f9; }
+
+/* Stat cards */
+[data-theme="dark"] .stat-card       { background: #1e293b; border-color: #334155; }
+[data-theme="dark"] .stat-card__info p  { color: #94a3b8; }
+[data-theme="dark"] .stat-card__info h2 { color: #f1f5f9; }
+[data-theme="dark"] .stat-card__icon--blue   { background: #172554; color: #60a5fa; }
+[data-theme="dark"] .stat-card__icon--green  { background: #052e16; color: #4ade80; }
+[data-theme="dark"] .stat-card__icon--yellow { background: #422006; color: #fbbf24; }
+[data-theme="dark"] .stat-card__icon--red    { background: #450a0a; color: #f87171; }
+
+/* Cards */
+[data-theme="dark"] .card            { background: #1e293b; border-color: #334155; }
+[data-theme="dark"] .card__header    { border-bottom-color: #334155; }
+[data-theme="dark"] .card__header h3 { color: #f1f5f9; }
+
+/* Tabla */
+[data-theme="dark"] thead tr         { background: #0f172a; }
+[data-theme="dark"] th               { color: #64748b; border-bottom-color: #334155; }
+[data-theme="dark"] td               { border-bottom-color: #1e293b; color: #cbd5e1; }
+[data-theme="dark"] td strong        { color: #f1f5f9; }
+[data-theme="dark"] tbody tr:hover td{ background: #0f172a; }
+
+/* Código */
+[data-theme="dark"] code             { background: #0f172a; color: #94a3b8; border: 1px solid #334155; }
+
+/* Búsqueda */
+[data-theme="dark"] .search-box      { background: #0f172a; border-color: #334155; }
+[data-theme="dark"] .search-box input{ color: #f1f5f9; }
+[data-theme="dark"] .search-box i    { color: #64748b; }
+
+/* Botones */
+[data-theme="dark"] .btn--ghost      { background: transparent; border-color: #334155; color: #94a3b8; }
+[data-theme="dark"] .btn--ghost:hover{ background: #0f172a; color: #f1f5f9; }
+
+/* Formularios */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea          { background: #0f172a; border-color: #334155; color: #f1f5f9; }
+[data-theme="dark"] input::placeholder{ color: #475569; }
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus,
+[data-theme="dark"] textarea:focus    { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
+[data-theme="dark"] label             { color: #94a3b8; }
+
+/* Modal */
+[data-theme="dark"] .modal-overlay   { background: rgba(0,0,0,.65); }
+[data-theme="dark"] .modal           { background: #1e293b; border: 1px solid #334155; }
+[data-theme="dark"] .modal__header   { border-bottom-color: #334155; }
+[data-theme="dark"] .modal__header h3{ color: #f1f5f9; }
+[data-theme="dark"] .modal__footer   { border-top-color: #334155; }
+
+/* Alert items */
+[data-theme="dark"] .alert-item              { border-bottom-color: #334155; }
+[data-theme="dark"] .alert-item__info strong { color: #f1f5f9; }
+[data-theme="dark"] .alert-item__info span   { color: #64748b; }
+
+/* Stock bar */
+[data-theme="dark"] .stock-bar-track { background: #334155; }
+[data-theme="dark"] .stock-bar-min   { background: #94a3b8; }
+
+/* Chips */
+[data-theme="dark"] .chip--analgesico       { background: #2e1065; color: #c4b5fd; }
+[data-theme="dark"] .chip--antibiotico      { background: #500724; color: #fbcfe8; }
+[data-theme="dark"] .chip--vitamina         { background: #052e16; color: #86efac; }
+[data-theme="dark"] .chip--antiinflamatorio { background: #431407; color: #fed7aa; }
+[data-theme="dark"] .chip--dermatologico    { background: #172554; color: #bfdbfe; }
+[data-theme="dark"] .chip--default          { background: #1e293b; color: #94a3b8; }
+
+/* Badges modo oscuro */
+[data-theme="dark"] .badge--green  { background: #052e16; color: #4ade80; }
+[data-theme="dark"] .badge--yellow { background: #422006; color: #fbbf24; }
+[data-theme="dark"] .badge--red    { background: #450a0a; color: #f87171; }
+[data-theme="dark"] .badge--blue   { background: #172554; color: #93c5fd; }
+
+/* Vencimiento */
+[data-theme="dark"] .venc--ok      { background: #052e16; color: #4ade80; }
+[data-theme="dark"] .venc--warning { background: #422006; color: #fbbf24; }
+[data-theme="dark"] .venc--danger  { background: #450a0a; color: #f87171; }
+
+/* Skeleton */
+[data-theme="dark"] .skeleton {
+    background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+}
+
+/* Scrollbar oscuro */
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #334155; }
+[data-theme="dark"] ::-webkit-scrollbar-track { background: #0f172a; }
+
+/* ── Toggle botón ── */
+.theme-toggle {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    color: var(--text-muted);
+    transition: all .2s;
+    flex-shrink: 0;
+}
+
+.theme-toggle:hover { background: var(--bg); color: var(--text); }
+
+/* ── Animaciones entrada ── */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+.stat-card { animation: fadeInUp .3s ease both; }
+.stat-card:nth-child(1) { animation-delay: .05s; }
+.stat-card:nth-child(2) { animation-delay: .10s; }
+.stat-card:nth-child(3) { animation-delay: .15s; }
+.stat-card:nth-child(4) { animation-delay: .20s; }
+.card { animation: fadeInUp .35s ease both; }
+
+/* ── Transición tema ── */
+*, *::before, *::after {
+    transition: background-color .25s ease, border-color .25s ease, color .15s ease;
+}
+
+/* ══════════════════════════════════════
+   ESPACIADO Y RESPIRACIÓN — Todas las páginas
+══════════════════════════════════════ */
+
+/* Espacio superior del contenido principal */
+.content {
+    padding: 32px 28px;
+}
+
+/* Separación entre KPIs y el contenido siguiente */
+.stats-grid {
+    margin-bottom: 24px;
+}
+
+/* Separación entre cards */
+.card + .card {
+    margin-top: 0;
+}
+
+/* Asegurar que el topbar no aplaste el contenido */
+.topbar {
+    margin-bottom: 0;
+}
+
+/* Respiración entre secciones de grid */
+.dashboard-grid-top,
+.dashboard-grid-bottom {
+    gap: 20px;
+}
+
+/* ── Página Alertas — espaciado específico ── */
+.alertas-page .stats-grid {
+    margin-top: 4px;
+    margin-bottom: 28px;
+}
+
+/* Separación entre card de filtros y tabla */
+.card[style*="margin-bottom"] {
+    margin-bottom: 20px !important;
+}
+
+/* ── Responsive tablet ── */
+@media (max-width: 1024px) {
+    .content {
+        padding: 24px 20px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        margin-bottom: 20px;
+    }
+
+    .dashboard-grid-top,
+    .dashboard-grid-bottom {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+/* ── Responsive mobile ── */
+@media (max-width: 768px) {
+    .content {
+        padding: 16px 14px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .main {
+        margin-left: 0;
+    }
+
+    .topbar {
+        padding: 0 16px;
+    }
+
+    .stat-card {
+        padding: 14px;
+    }
+
+    .stat-card__info h2 {
+        font-size: 20px;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ── Responsive mobile pequeño ── */
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .content {
+        padding: 12px 10px;
+    }
+
+    .card__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+/* ══════════════════════════════════════
+   PRODUCTOS CRÍTICOS — Espaciado mejorado
+══════════════════════════════════════ */
+
+/* Más altura en cada fila */
+#tabla-criticos td {
+    padding: 14px 14px;
+    vertical-align: middle;
+}
+
+/* Separador más visible entre filas */
+#tabla-criticos tr {
+    border-bottom: 1px solid var(--border);
+}
+
+#tabla-criticos tr:last-child {
+    border-bottom: none;
+}
+
+/* Nombre del producto más grande y con más peso */
+#tabla-criticos td strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+/* Chip de categoría con más separación del nombre */
+#tabla-criticos td .chip {
+    margin-top: 3px;
+}
+
+/* Columna de stock con más espacio */
+#tabla-criticos .stock-bar-wrap {
+    min-width: 120px;
+    gap: 6px;
+}
+
+#tabla-criticos .stock-bar-labels .val {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+#tabla-criticos .stock-bar-labels .max {
+    font-size: 11px;
+}
+
+#tabla-criticos .stock-bar-track {
+    height: 7px;
+    border-radius: 999px;
+}
+
+/* Badge de estado con padding cómodo */
+#tabla-criticos .badge {
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Header de la card con más padding */
+#tabla-criticos + * .card__header,
+.card:has(#tabla-criticos) .card__header {
+    padding: 16px 20px;
+}

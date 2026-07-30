@@ -5,6 +5,7 @@ let productoEliminarID = null;
 
 // ── Carga inicial ──────────────────────────────────────────
 async function cargarProductos() {
+    mostrarSkeleton();
     productosData = await fetchAPI(API.productos);
     renderTabla(productosData);
 }
@@ -228,5 +229,124 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     });
 });
 
+// ── Helpers visuales ──────────────────────────────────────
+
+function chipCategoria(nombre) {
+    const mapa = {
+        'Analgésicos':        'chip--analgesico',
+        'Antibióticos':       'chip--antibiotico',
+        'Vitaminas':          'chip--vitamina',
+        'Antiinflamatorios':  'chip--antiinflamatorio',
+        'Dermatológicos':     'chip--dermatologico'
+    };
+    const cls = mapa[nombre] || 'chip--default';
+    return `<span class="chip ${cls}">${nombre}</span>`;
+}
+
+function barraStock(actual, minimo, maximo) {
+    const pct    = maximo > 0 ? Math.min((actual / maximo) * 100, 100) : 0;
+    const minPct = maximo > 0 ? Math.min((minimo / maximo) * 100, 100) : 0;
+    const color  = actual === 0 ? 'red' : actual <= minimo ? 'yellow' : 'green';
+
+    return `
+        <div class="stock-bar-wrap">
+            <div class="stock-bar-labels">
+                <span class="val">${actual}</span>
+                <span class="max">máx ${maximo}</span>
+            </div>
+            <div class="stock-bar-track">
+                <div class="stock-bar-fill stock-bar-fill--${color}"
+                     style="width:${pct}%"></div>
+                <div class="stock-bar-min" style="left:${minPct}%"
+                     title="Stock mínimo: ${minimo}"></div>
+            </div>
+        </div>`;
+}
+
+function badgeVencimiento(fecha) {
+    if (!fecha) return `<span class="venc--none">—</span>`;
+
+    const hoy   = new Date();
+    const venc  = new Date(fecha);
+    const dias  = Math.ceil((venc - hoy) / (1000 * 60 * 60 * 24));
+
+    if (dias < 0)
+        return `<span class="venc venc--danger"><i class="ti ti-calendar-x"></i> Vencido</span>`;
+    if (dias <= 90)
+        return `<span class="venc venc--warning"><i class="ti ti-calendar-exclamation"></i> ${dias}d</span>`;
+    return `<span class="venc venc--ok"><i class="ti ti-calendar-check"></i> ${formatFecha(fecha)}</span>`;
+}
+
+function badgeEstado(estado) {
+    const mapa = {
+        'Disponible': 'badge--green',
+        'Stock Bajo':  'badge--yellow',
+        'Agotado':     'badge--red'
+    };
+    return `<span class="badge ${mapa[estado] || 'badge--blue'}">${estado}</span>`;
+}
+
+// ── Skeleton loading ───────────────────────────────────────
+function mostrarSkeleton() {
+    const tbody = document.getElementById('tabla-productos');
+    tbody.innerHTML = Array(6).fill(`
+        <tr class="skeleton-row">
+            ${Array(9).fill(`<td><span class="skeleton" style="width:${60 + Math.random()*30}%">&nbsp;</span></td>`).join('')}
+        </tr>`).join('');
+}
+
+// ── Render tabla ───────────────────────────────────────────
+function renderTabla(lista) {
+    const tbody = document.getElementById('tabla-productos');
+    document.getElementById('contador-productos').textContent =
+        `${lista.length} producto${lista.length !== 1 ? 's' : ''}`;
+
+    if (!lista.length) {
+        tbody.innerHTML = `
+            <tr><td colspan="9" style="text-align:center;padding:40px;color:#94a3b8">
+                Sin productos que mostrar
+            </td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = lista.map(p => `
+        <tr>
+            <td>
+                <code style="font-size:11px;background:#f1f5f9;padding:2px 6px;border-radius:4px">
+                    ${p.codigoBarras}
+                </code>
+            </td>
+            <td>
+                <strong style="font-size:13px">${p.nombre}</strong>
+                ${p.requiereReceta
+                    ? '<span class="badge badge--blue" style="margin-left:4px;font-size:10px">Receta</span>'
+                    : ''}
+            </td>
+            <td>${chipCategoria(p.categoriaNombre)}</td>
+            <td style="font-size:12px;color:#475569">${p.proveedorNombre}</td>
+            <td style="font-weight:600;color:#2563eb">${formatCOP(p.precioVenta)}</td>
+            <td>${barraStock(p.stockActual, p.stockMinimo, p.stockMaximo)}</td>
+            <td>${badgeVencimiento(p.fechaVencimiento)}</td>
+            <td>${badgeEstado(p.estadoStock)}</td>
+            <td>
+                <div style="display:flex;gap:4px">
+                    <button class="btn btn--ghost btn--sm" title="Movimiento de stock"
+                        onclick="abrirModalMovimiento(${p.productoID}, '${p.nombre.replace(/'/g,"\\'")}')">
+                        <i class="ti ti-arrows-exchange"></i>
+                    </button>
+                    <button class="btn btn--ghost btn--sm" title="Editar"
+                        onclick="abrirModalEditar(${p.productoID})">
+                        <i class="ti ti-edit"></i>
+                    </button>
+                    <button class="btn btn--ghost btn--sm" title="Eliminar"
+                        onclick="abrirModalEliminar(${p.productoID}, '${p.nombre.replace(/'/g,"\\'")}')">
+                        <i class="ti ti-trash" style="color:#dc2626"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>`).join('');
+}
+
 // ── Init ───────────────────────────────────────────────────
 cargarProductos();
+

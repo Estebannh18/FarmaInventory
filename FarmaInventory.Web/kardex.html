@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmaInventory Pro — Kardex</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar__brand">
+        <h1>FarmaInventory</h1>
+    </div>
+    <nav class="sidebar__nav">
+        <a href="index.html" class="nav-item active">
+            <i class="ti ti-layout-dashboard"></i> Dashboard
+        </a>
+
+        <div class="nav-group">
+            <span class="nav-group__label">Inventario</span>
+            <a href="productos.html"   class="nav-item"><i class="ti ti-pill"></i> Productos</a>
+            <a href="lotes.html"       class="nav-item"><i class="ti ti-package"></i> Lotes</a>
+            <a href="kardex.html"      class="nav-item"><i class="ti ti-history"></i> Kardex</a>
+            <a href="proveedores.html" class="nav-item"><i class="ti ti-truck"></i> Proveedores</a>
+        </div>
+
+        <div class="nav-group">
+            <span class="nav-group__label">Control</span>
+            <a href="alertas.html"   class="nav-item"><i class="ti ti-bell"></i> Alertas</a>
+            <a href="auditoria.html" class="nav-item"><i class="ti ti-shield-check"></i> Auditoría</a>
+        </div>
+    </nav>
+    <div class="sidebar__footer">Sistema Farmacéutico © 2026</div>
+</aside>
+
+<div class="main">
+    <header class="topbar">
+        <span class="topbar__title">Kardex — Historial de Movimientos</span>
+        <div class="topbar__right">
+            <button class="btn btn--ghost btn--sm" onclick="exportarKardexPDF()">
+                <i class="ti ti-file-type-pdf"></i> Exportar PDF
+            </button>
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleTema()" title="Modo oscuro">
+    <i class="ti ti-moon"></i>
+</button>
+        </div>
+    </header>
+
+    <main class="content">
+
+        <!-- Stats -->
+        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--blue"><i class="ti ti-history"></i></div>
+                <div class="stat-card__info"><p>Total Movimientos</p><h2 id="sk-total">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--green"><i class="ti ti-arrow-bar-to-down"></i></div>
+                <div class="stat-card__info"><p>Entradas</p><h2 id="sk-entradas">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--red"><i class="ti ti-arrow-bar-up"></i></div>
+                <div class="stat-card__info"><p>Salidas</p><h2 id="sk-salidas">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--yellow"><i class="ti ti-adjustments"></i></div>
+                <div class="stat-card__info"><p>Ajustes</p><h2 id="sk-ajustes">—</h2></div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card" style="margin-bottom:16px">
+            <div class="card__body" style="padding:14px 16px">
+                <div class="toolbar" style="flex-wrap:wrap;gap:10px">
+                    <div class="search-box" style="min-width:220px">
+                        <i class="ti ti-search"></i>
+                        <input type="text" id="filtro-buscar" placeholder="Buscar producto...">
+                    </div>
+                    <select id="filtro-tipo" class="btn btn--ghost" style="padding:7px 12px">
+                        <option value="">Todos los tipos</option>
+                        <option value="Entrada">Entrada</option>
+                        <option value="Salida">Salida</option>
+                        <option value="Ajuste">Ajuste</option>
+                    </select>
+                    <div style="display:flex;align-items:center;gap:6px">
+                        <label style="font-size:12px;color:#64748b;font-weight:500">Desde</label>
+                        <input type="date" id="filtro-desde" style="border:1px solid #e2e8f0;border-radius:7px;padding:6px 10px;font-size:12px;outline:none">
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px">
+                        <label style="font-size:12px;color:#64748b;font-weight:500">Hasta</label>
+                        <input type="date" id="filtro-hasta" style="border:1px solid #e2e8f0;border-radius:7px;padding:6px 10px;font-size:12px;outline:none">
+                    </div>
+                    <button class="btn btn--primary btn--sm" onclick="aplicarFiltros()">
+                        <i class="ti ti-filter"></i> Filtrar
+                    </button>
+                    <button class="btn btn--ghost btn--sm" onclick="limpiarFiltros()">
+                        <i class="ti ti-x"></i> Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla Kardex -->
+        <div class="card">
+            <div class="card__header">
+                <h3>Historial de Movimientos</h3>
+                <span id="kardex-contador" style="font-size:12px;color:#64748b"></span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Fecha</th>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Usuario</th>
+                            <th>Tipo</th>
+                            <th>Cantidad</th>
+                            <th>Stock Anterior</th>
+                            <th>Stock Nuevo</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-kardex">
+                        <tr><td colspan="10" style="text-align:center;padding:40px;color:#94a3b8">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/kardex.js"></script>
+<script src="js/theme.js"></script>
+</body>
+</html>

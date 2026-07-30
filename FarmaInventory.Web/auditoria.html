@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmaInventory Pro — Auditoría</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar__brand">
+        <h1>FarmaInventory</h1>
+    </div>
+    <nav class="sidebar__nav">
+        <a href="index.html" class="nav-item active">
+            <i class="ti ti-layout-dashboard"></i> Dashboard
+        </a>
+
+        <div class="nav-group">
+            <span class="nav-group__label">Inventario</span>
+            <a href="productos.html"   class="nav-item"><i class="ti ti-pill"></i> Productos</a>
+            <a href="lotes.html"       class="nav-item"><i class="ti ti-package"></i> Lotes</a>
+            <a href="kardex.html"      class="nav-item"><i class="ti ti-history"></i> Kardex</a>
+            <a href="proveedores.html" class="nav-item"><i class="ti ti-truck"></i> Proveedores</a>
+        </div>
+
+        <div class="nav-group">
+            <span class="nav-group__label">Control</span>
+            <a href="alertas.html"   class="nav-item"><i class="ti ti-bell"></i> Alertas</a>
+            <a href="auditoria.html" class="nav-item"><i class="ti ti-shield-check"></i> Auditoría</a>
+        </div>
+    </nav>
+    <div class="sidebar__footer">Sistema Farmacéutico © 2026</div>
+</aside>
+
+<div class="main">
+    <header class="topbar">
+        <span class="topbar__title">Log de Auditoría</span>
+        <div class="topbar__right">
+            <button class="btn btn--ghost btn--sm" onclick="exportarAuditoriaPDF()">
+                <i class="ti ti-file-type-pdf"></i> Exportar PDF
+            </button>
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleTema()" title="Modo oscuro">
+    <i class="ti ti-moon"></i>
+</button>
+        </div>
+    </header>
+
+    <main class="content">
+
+        <!-- Resumen por módulo -->
+        <div id="resumen-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px">
+            <div style="text-align:center;padding:20px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;color:#94a3b8;font-size:13px">
+                Cargando resumen...
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card" style="margin-bottom:16px">
+            <div class="card__body" style="padding:14px 16px">
+                <div class="toolbar" style="flex-wrap:wrap;gap:10px">
+                    <select id="filtro-modulo" class="btn btn--ghost" style="padding:7px 12px">
+                        <option value="">Todos los módulos</option>
+                        <option value="Productos">Productos</option>
+                        <option value="Lotes">Lotes</option>
+                        <option value="Alertas">Alertas</option>
+                        <option value="Usuarios">Usuarios</option>
+                    </select>
+                    <select id="filtro-accion" class="btn btn--ghost" style="padding:7px 12px">
+                        <option value="">Todas las acciones</option>
+                        <option value="Crear">Crear</option>
+                        <option value="Actualizar">Actualizar</option>
+                        <option value="Eliminar">Eliminar</option>
+                        <option value="Movimiento">Movimiento</option>
+                    </select>
+                    <div style="display:flex;align-items:center;gap:6px">
+                        <label style="font-size:12px;color:#64748b;font-weight:500">Desde</label>
+                        <input type="date" id="filtro-desde" style="border:1px solid #e2e8f0;border-radius:7px;padding:6px 10px;font-size:12px;outline:none">
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px">
+                        <label style="font-size:12px;color:#64748b;font-weight:500">Hasta</label>
+                        <input type="date" id="filtro-hasta" style="border:1px solid #e2e8f0;border-radius:7px;padding:6px 10px;font-size:12px;outline:none">
+                    </div>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;cursor:pointer;color:#dc2626">
+                        <input type="checkbox" id="filtro-fallidos" onchange="aplicarFiltros()">
+                        Solo fallidos
+                    </label>
+                    <button class="btn btn--primary btn--sm" onclick="aplicarFiltros()">
+                        <i class="ti ti-filter"></i> Filtrar
+                    </button>
+                    <button class="btn btn--ghost btn--sm" onclick="limpiarFiltros()">
+                        <i class="ti ti-x"></i> Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla auditoría -->
+        <div class="card">
+            <div class="card__header">
+                <h3>Registro de Eventos</h3>
+                <span id="audit-contador" style="font-size:12px;color:#64748b"></span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Fecha</th>
+                            <th>Usuario</th>
+                            <th>Acción</th>
+                            <th>Módulo</th>
+                            <th>Entidad</th>
+                            <th>Antes</th>
+                            <th>Después</th>
+                            <th>Estado</th>
+                            <th>Detalle</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-auditoria">
+                        <tr><td colspan="10" style="text-align:center;padding:40px;color:#94a3b8">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Modal detalle JSON -->
+<div class="modal-overlay" id="modal-json">
+    <div class="modal" style="max-width:500px">
+        <div class="modal__header">
+            <h3 id="json-titulo">Valores</h3>
+            <button class="btn btn--ghost btn--sm" onclick="cerrarModal('modal-json')">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <div class="modal__body">
+            <pre id="json-contenido" style="background:#0f172a;color:#e2e8f0;padding:16px;border-radius:8px;font-size:12px;overflow-x:auto;line-height:1.6"></pre>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/auditoria.js"></script>
+<script src="js/theme.js"></script>
+</body>
+</html>

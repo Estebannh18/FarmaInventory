@@ -13,14 +13,27 @@
 <aside class="sidebar">
     <div class="sidebar__brand">
         <h1>FarmaInventory</h1>
-        <span>Pro v1.0</span>
     </div>
     <nav class="sidebar__nav">
-        <a href="index.html"     class="nav-item"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
-        <a href="productos.html" class="nav-item active"><i class="ti ti-pill"></i> Productos</a>
-        <a href="alertas.html"   class="nav-item"><i class="ti ti-bell"></i> Alertas</a>
+        <a href="index.html" class="nav-item active">
+            <i class="ti ti-layout-dashboard"></i> Dashboard
+        </a>
+
+        <div class="nav-group">
+            <span class="nav-group__label">Inventario</span>
+            <a href="productos.html"   class="nav-item"><i class="ti ti-pill"></i> Productos</a>
+            <a href="lotes.html"       class="nav-item"><i class="ti ti-package"></i> Lotes</a>
+            <a href="kardex.html"      class="nav-item"><i class="ti ti-history"></i> Kardex</a>
+            <a href="proveedores.html" class="nav-item"><i class="ti ti-truck"></i> Proveedores</a>
+        </div>
+
+        <div class="nav-group">
+            <span class="nav-group__label">Control</span>
+            <a href="alertas.html"   class="nav-item"><i class="ti ti-bell"></i> Alertas</a>
+            <a href="auditoria.html" class="nav-item"><i class="ti ti-shield-check"></i> Auditoría</a>
+        </div>
     </nav>
-    <div class="sidebar__footer">Sistema Farmacéutico © 2025</div>
+    <div class="sidebar__footer">Sistema Farmacéutico © 2026</div>
 </aside>
 
 <div class="main">
@@ -30,6 +43,9 @@
             <button class="btn btn--primary" onclick="abrirModalCrear()">
                 <i class="ti ti-plus"></i> Nuevo Producto
             </button>
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleTema()" title="Modo oscuro">
+    <i class="ti ti-moon"></i>
+</button>
         </div>
     </header>
 
@@ -236,5 +252,6 @@
 
 <script src="js/config.js"></script>
 <script src="js/productos.js"></script>
+<script src="js/theme.js"></script>
 </body>
 </html>

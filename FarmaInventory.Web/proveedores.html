@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmaInventory Pro — Proveedores</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar__brand">
+        <h1>FarmaInventory</h1>
+    </div>
+    <nav class="sidebar__nav">
+        <a href="index.html" class="nav-item active">
+            <i class="ti ti-layout-dashboard"></i> Dashboard
+        </a>
+
+        <div class="nav-group">
+            <span class="nav-group__label">Inventario</span>
+            <a href="productos.html"   class="nav-item"><i class="ti ti-pill"></i> Productos</a>
+            <a href="lotes.html"       class="nav-item"><i class="ti ti-package"></i> Lotes</a>
+            <a href="kardex.html"      class="nav-item"><i class="ti ti-history"></i> Kardex</a>
+            <a href="proveedores.html" class="nav-item"><i class="ti ti-truck"></i> Proveedores</a>
+        </div>
+
+        <div class="nav-group">
+            <span class="nav-group__label">Control</span>
+            <a href="alertas.html"   class="nav-item"><i class="ti ti-bell"></i> Alertas</a>
+            <a href="auditoria.html" class="nav-item"><i class="ti ti-shield-check"></i> Auditoría</a>
+        </div>
+    </nav>
+    <div class="sidebar__footer">Sistema Farmacéutico © 2026</div>
+</aside>
+<div class="main">
+    <header class="topbar">
+        <span class="topbar__title">Gestión de Proveedores</span>
+        <div class="topbar__right">
+            <button class="btn btn--primary" onclick="abrirModalCrear()">
+                <i class="ti ti-plus"></i> Nuevo Proveedor
+            </button>
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleTema()" title="Modo oscuro">
+    <i class="ti ti-moon"></i>
+</button>
+        </div>
+    </header>
+
+    <main class="content">
+
+        <!-- Stats -->
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--blue"><i class="ti ti-truck"></i></div>
+                <div class="stat-card__info"><p>Total Proveedores</p><h2 id="pv-total">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--green"><i class="ti ti-pill"></i></div>
+                <div class="stat-card__info"><p>Productos Asociados</p><h2 id="pv-productos">—</h2></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--yellow"><i class="ti ti-cash"></i></div>
+                <div class="stat-card__info"><p>Valor Total Inventario</p><h2 id="pv-valor" style="font-size:18px">—</h2></div>
+            </div>
+        </div>
+
+        <!-- Tarjetas proveedores -->
+        <div id="grid-proveedores"
+             style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:20px">
+            <div style="color:#94a3b8;font-size:13px;padding:20px">Cargando proveedores...</div>
+        </div>
+
+        <!-- Tabla detallada -->
+        <div class="card">
+            <div class="card__header">
+                <h3>Detalle de Proveedores</h3>
+                <div class="search-box" style="max-width:240px">
+                    <i class="ti ti-search"></i>
+                    <input type="text" id="filtro-proveedor" placeholder="Buscar proveedor...">
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Proveedor</th>
+                            <th>NIT</th>
+                            <th>Contacto</th>
+                            <th>Productos</th>
+                            <th>Unidades</th>
+                            <th>Valor Inventario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-proveedores">
+                        <tr><td colspan="7" style="text-align:center;padding:40px;color:#94a3b8">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Modal Crear/Editar -->
+<div class="modal-overlay" id="modal-proveedor">
+    <div class="modal" style="max-width:480px">
+        <div class="modal__header">
+            <h3 id="pv-modal-titulo">Nuevo Proveedor</h3>
+            <button class="btn btn--ghost btn--sm" onclick="cerrarModal('modal-proveedor')">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <div class="modal__body">
+            <div class="form-grid">
+                <div class="form-group full">
+                    <label>Razón Social *</label>
+                    <input type="text" id="pv-razon" placeholder="Laboratorios ABC Colombia SAS">
+                </div>
+                <div class="form-group">
+                    <label>NIT *</label>
+                    <input type="text" id="pv-nit" placeholder="900123456-1">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" id="pv-telefono" placeholder="6015551234">
+                </div>
+                <div class="form-group full">
+                    <label>Email</label>
+                    <input type="email" id="pv-email" placeholder="ventas@laboratorio.com">
+                </div>
+                <div class="form-group full">
+                    <label>Dirección</label>
+                    <input type="text" id="pv-direccion" placeholder="Cra 15 # 93-75, Bogotá">
+                </div>
+            </div>
+        </div>
+        <div class="modal__footer">
+            <button class="btn btn--ghost" onclick="cerrarModal('modal-proveedor')">Cancelar</button>
+            <button class="btn btn--primary" onclick="guardarProveedor()">
+                <i class="ti ti-device-floppy"></i> Guardar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal-overlay" id="modal-eliminar-pv">
+    <div class="modal" style="max-width:360px">
+        <div class="modal__header">
+            <h3>Eliminar Proveedor</h3>
+            <button class="btn btn--ghost btn--sm" onclick="cerrarModal('modal-eliminar-pv')">
+                <i class="ti ti-x"></i>
+            </button>
+        </div>
+        <div class="modal__body">
+            <p style="font-size:14px;color:#475569;line-height:1.6">
+                ¿Eliminar a <strong id="pv-eliminar-nombre"></strong>?
+                Los productos asociados no se verán afectados.
+            </p>
+        </div>
+        <div class="modal__footer">
+            <button class="btn btn--ghost" onclick="cerrarModal('modal-eliminar-pv')">Cancelar</button>
+            <button class="btn btn--danger" onclick="confirmarEliminarPv()">
+                <i class="ti ti-trash"></i> Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="js/config.js"></script>
+<script src="js/proveedores.js"></script>
+<script src="js/theme.js"></script>
+</body>
+</html>
