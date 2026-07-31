@@ -2,7 +2,7 @@ using Dapper;
 using FarmaInventory.API.DTOs;
 using FarmaInventory.API.Models;
 using FarmaInventory.API.Repositories.Interfaces;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace FarmaInventory.API.Repositories
 {
@@ -15,56 +15,54 @@ namespace FarmaInventory.API.Repositories
             _connectionString = config.GetConnectionString("DefaultConnection")!;
         }
 
-        private SqlConnection GetConnection() => new SqlConnection(_connectionString);
+        private NpgsqlConnection GetConnection() => new NpgsqlConnection(_connectionString);
 
         public async Task<IEnumerable<Lote>> ObtenerTodosAsync(int? productoId)
         {
             using var conn = GetConnection();
             return await conn.QueryAsync<Lote>(
-                "sp_ObtenerLotes",
-                new { ProductoID = productoId },
-                commandType: System.Data.CommandType.StoredProcedure);
+                "SELECT * FROM sp_obtener_lotes(@ProductoId)",
+                new { ProductoId = productoId });
         }
 
         public async Task<IEnumerable<AlertaVencimiento>> ObtenerAlertasVencimientoAsync(int diasAlerta)
         {
             using var conn = GetConnection();
             return await conn.QueryAsync<AlertaVencimiento>(
-                "sp_AlertasVencimiento",
-                new { DiasAlerta = diasAlerta },
-                commandType: System.Data.CommandType.StoredProcedure);
+                "SELECT * FROM sp_alertas_vencimiento(@DiasAlerta)",
+                new { DiasAlerta = diasAlerta });
         }
 
         public async Task<int> CrearAsync(CrearLoteDTO dto)
         {
             using var conn = GetConnection();
             return await conn.QueryFirstAsync<int>(
-                "sp_CrearLote",
+                @"SELECT sp_crear_lote(
+                    @ProductoID, @NumeroLote, @RegistroINVIMA,
+                    @FechaFabricacion, @FechaVencimiento,
+                    @CantidadInicial, @PrecioCompra)",
                 new {
-                    dto.ProductoID,    dto.NumeroLote,
-                    dto.RegistroINVIMA, dto.FechaFabricacion,
+                    dto.ProductoID,       dto.NumeroLote,
+                    dto.RegistroINVIMA,   dto.FechaFabricacion,
                     dto.FechaVencimiento, dto.CantidadInicial,
                     dto.PrecioCompra
-                },
-                commandType: System.Data.CommandType.StoredProcedure);
+                });
         }
 
         public async Task ActualizarCantidadAsync(int loteId, int nuevaCantidad)
         {
             using var conn = GetConnection();
             await conn.ExecuteAsync(
-                "sp_ActualizarCantidadLote",
-                new { LoteID = loteId, NuevaCantidad = nuevaCantidad },
-                commandType: System.Data.CommandType.StoredProcedure);
+                "SELECT sp_actualizar_cantidad_lote(@LoteId, @NuevaCantidad)",
+                new { LoteId = loteId, NuevaCantidad = nuevaCantidad });
         }
 
         public async Task EliminarAsync(int loteId)
         {
             using var conn = GetConnection();
             await conn.ExecuteAsync(
-                "sp_EliminarLote",
-                new { LoteID = loteId },
-                commandType: System.Data.CommandType.StoredProcedure);
+                "SELECT sp_eliminar_lote(@LoteId)",
+                new { LoteId = loteId });
         }
     }
 }

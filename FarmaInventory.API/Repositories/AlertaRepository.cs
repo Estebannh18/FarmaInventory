@@ -1,7 +1,7 @@
 using Dapper;
 using FarmaInventory.API.Models;
 using FarmaInventory.API.Repositories.Interfaces;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace FarmaInventory.API.Repositories
 {
@@ -14,22 +14,21 @@ namespace FarmaInventory.API.Repositories
             _connectionString = config.GetConnectionString("DefaultConnection")!;
         }
 
-        private SqlConnection GetConnection() => new SqlConnection(_connectionString);
+        private NpgsqlConnection GetConnection() => new NpgsqlConnection(_connectionString);
 
         public async Task<IEnumerable<Alerta>> ObtenerActivasAsync()
         {
             using var conn = GetConnection();
             return await conn.QueryAsync<Alerta>(
-                "sp_ObtenerAlertas",
-                commandType: System.Data.CommandType.StoredProcedure);
+                "SELECT * FROM sp_obtener_alertas()");
         }
 
         public async Task ResolverAsync(int alertaId)
         {
             using var conn = GetConnection();
             await conn.ExecuteAsync(
-                "UPDATE Alertas SET Resuelta = 1, FechaResolucion = GETDATE() WHERE AlertaID = @AlertaID",
-                new { AlertaID = alertaId });
+                "UPDATE alertas SET resuelta = TRUE, fecha_resolucion = NOW() WHERE alerta_id = @AlertaId",
+                new { AlertaId = alertaId });
         }
     }
 }

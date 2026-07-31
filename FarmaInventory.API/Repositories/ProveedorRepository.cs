@@ -2,7 +2,7 @@ using Dapper;
 using FarmaInventory.API.DTOs;
 using FarmaInventory.API.Models;
 using FarmaInventory.API.Repositories.Interfaces;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace FarmaInventory.API.Repositories
 {
@@ -15,65 +15,59 @@ namespace FarmaInventory.API.Repositories
             _connectionString = config.GetConnectionString("DefaultConnection")!;
         }
 
-        private SqlConnection GetConnection() => new SqlConnection(_connectionString);
+        private NpgsqlConnection GetConnection() => new NpgsqlConnection(_connectionString);
 
         public async Task<IEnumerable<Proveedor>> ObtenerTodosAsync()
         {
             using var conn = GetConnection();
             return await conn.QueryAsync<Proveedor>(
-                "sp_ObtenerProveedores",
-                commandType: System.Data.CommandType.StoredProcedure);
+                "SELECT * FROM sp_obtener_proveedores()");
         }
 
         public async Task<Proveedor?> ObtenerPorIdAsync(int id)
         {
             using var conn = GetConnection();
             return await conn.QueryFirstOrDefaultAsync<Proveedor>(
-                "sp_ObtenerProveedorPorID",
-                new { ProveedorID = id },
-                commandType: System.Data.CommandType.StoredProcedure);
+                "SELECT * FROM sp_obtener_proveedor_por_id(@ProveedorId)",
+                new { ProveedorId = id });
         }
 
         public async Task<int> CrearAsync(CrearProveedorDTO dto)
         {
             using var conn = GetConnection();
             return await conn.QueryFirstAsync<int>(
-                "sp_CrearProveedor",
+                "SELECT sp_crear_proveedor(@RazonSocial, @NIT, @Telefono, @Email, @Direccion)",
                 new {
                     dto.RazonSocial, dto.NIT,
                     dto.Telefono, dto.Email, dto.Direccion
-                },
-                commandType: System.Data.CommandType.StoredProcedure);
+                });
         }
 
         public async Task ActualizarAsync(int id, ActualizarProveedorDTO dto)
         {
             using var conn = GetConnection();
             await conn.ExecuteAsync(
-                "sp_ActualizarProveedor",
+                "SELECT sp_actualizar_proveedor(@ProveedorId, @RazonSocial, @NIT, @Telefono, @Email, @Direccion)",
                 new {
-                    ProveedorID = id,
+                    ProveedorId = id,
                     dto.RazonSocial, dto.NIT,
                     dto.Telefono, dto.Email, dto.Direccion
-                },
-                commandType: System.Data.CommandType.StoredProcedure);
+                });
         }
 
         public async Task EliminarAsync(int id)
         {
             using var conn = GetConnection();
             await conn.ExecuteAsync(
-                "sp_EliminarProveedor",
-                new { ProveedorID = id },
-                commandType: System.Data.CommandType.StoredProcedure);
+                "SELECT sp_eliminar_proveedor(@ProveedorId)",
+                new { ProveedorId = id });
         }
 
         public async Task<IEnumerable<ActividadItem>> ObtenerActividadRecienteAsync()
         {
             using var conn = GetConnection();
             return await conn.QueryAsync<ActividadItem>(
-                "sp_ActividadReciente",
-                commandType: System.Data.CommandType.StoredProcedure);
+                "SELECT * FROM sp_actividad_reciente()");
         }
     }
 }

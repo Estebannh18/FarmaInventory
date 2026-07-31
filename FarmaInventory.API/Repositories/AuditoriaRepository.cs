@@ -2,7 +2,7 @@ using Dapper;
 using FarmaInventory.API.DTOs;
 using FarmaInventory.API.Models;
 using FarmaInventory.API.Repositories.Interfaces;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace FarmaInventory.API.Repositories
 {
@@ -15,7 +15,7 @@ namespace FarmaInventory.API.Repositories
             _connectionString = config.GetConnectionString("DefaultConnection")!;
         }
 
-        private SqlConnection GetConnection() => new SqlConnection(_connectionString);
+        private NpgsqlConnection GetConnection() => new NpgsqlConnection(_connectionString);
 
         public async Task<IEnumerable<AuditoriaItem>> ObtenerAsync(
             string? modulo, string? accion, int? usuarioId,
@@ -23,40 +23,41 @@ namespace FarmaInventory.API.Repositories
         {
             using var conn = GetConnection();
             return await conn.QueryAsync<AuditoriaItem>(
-                "sp_ObtenerAuditoria",
+                "SELECT * FROM sp_obtener_auditoria(@Modulo, @Accion, @UsuarioId, @Desde, @Hasta, @SoloFallidos)",
                 new {
                     Modulo       = modulo,
                     Accion       = accion,
-                    UsuarioID    = usuarioId,
-                    FechaDesde   = desde,
-                    FechaHasta   = hasta,
-                    SoloFallidos = soloFallidos ? 1 : 0
-                },
-                commandType: System.Data.CommandType.StoredProcedure);
+                    UsuarioId    = usuarioId,
+                    Desde        = desde,
+                    Hasta        = hasta,
+                    SoloFallidos = soloFallidos
+                });
         }
 
         public async Task<IEnumerable<AuditoriaResumen>> ObtenerResumenAsync()
         {
             using var conn = GetConnection();
             return await conn.QueryAsync<AuditoriaResumen>(
-                "sp_ResumenAuditoria",
-                commandType: System.Data.CommandType.StoredProcedure);
+                "SELECT * FROM sp_resumen_auditoria()");
         }
 
         public async Task RegistrarAsync(RegistrarAuditoriaDTO dto)
         {
             using var conn = GetConnection();
             await conn.ExecuteAsync(
-                "sp_RegistrarAuditoria",
+                @"SELECT sp_registrar_auditoria(
+                    @UsuarioID, @UsuarioNombre, @Accion, @Modulo,
+                    @EntidadID, @EntidadNombre,
+                    @ValoresAnteriores, @ValoresNuevos,
+                    @DireccionIP, @Exitoso, @Detalle)",
                 new {
-                    dto.UsuarioID,       dto.UsuarioNombre,
-                    dto.Accion,          dto.Modulo,
-                    dto.EntidadID,       dto.EntidadNombre,
+                    dto.UsuarioID,         dto.UsuarioNombre,
+                    dto.Accion,            dto.Modulo,
+                    dto.EntidadID,         dto.EntidadNombre,
                     dto.ValoresAnteriores, dto.ValoresNuevos,
-                    dto.DireccionIP,     dto.Exitoso,
+                    dto.DireccionIP,       dto.Exitoso,
                     dto.Detalle
-                },
-                commandType: System.Data.CommandType.StoredProcedure);
+                });
         }
     }
 }

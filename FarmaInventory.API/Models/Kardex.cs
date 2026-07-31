@@ -21,10 +21,10 @@ namespace FarmaInventory.API.Models
         public string ProductoNombre { get; set; } = string.Empty;
         public string CategoriaNombre { get; set; } = string.Empty;
         public int StockActual { get; set; }
-        public int TotalEntradas { get; set; }
-        public int TotalSalidas { get; set; }
-        public int TotalAjustes { get; set; }
-        public int TotalMovimientos { get; set; }
+        public long TotalEntradas { get; set; }
+        public long TotalSalidas { get; set; }
+        public long TotalAjustes { get; set; }
+        public long TotalMovimientos { get; set; }
         public DateTime? UltimoMovimiento { get; set; }
     }
 }

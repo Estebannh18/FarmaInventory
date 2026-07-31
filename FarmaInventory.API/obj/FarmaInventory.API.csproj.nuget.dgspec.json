@@ -50,9 +50,9 @@
               "target": "Package",
               "version": "[2.1.79, )"
             },
-            "Microsoft.Data.SqlClient": {
+            "Npgsql": {
               "target": "Package",
-              "version": "[7.0.1, )"
+              "version": "[10.0.3, )"
             }
           },
           "imports": [

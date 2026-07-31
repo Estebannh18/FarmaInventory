@@ -1,7 +1,7 @@
 using Dapper;
 using FarmaInventory.API.Models;
 using FarmaInventory.API.Repositories.Interfaces;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 
 namespace FarmaInventory.API.Repositories
 {
@@ -14,29 +14,27 @@ namespace FarmaInventory.API.Repositories
             _connectionString = config.GetConnectionString("DefaultConnection")!;
         }
 
-        private SqlConnection GetConnection() => new SqlConnection(_connectionString);
+        private NpgsqlConnection GetConnection() => new NpgsqlConnection(_connectionString);
 
         public async Task<IEnumerable<KardexItem>> ObtenerKardexAsync(
             int? productoId, string? tipo, DateTime? desde, DateTime? hasta)
         {
             using var conn = GetConnection();
             return await conn.QueryAsync<KardexItem>(
-                "sp_ObtenerKardex",
+                "SELECT * FROM sp_obtener_kardex(@ProductoId, @Tipo, @Desde, @Hasta)",
                 new {
-                    ProductoID     = productoId,
-                    TipoMovimiento = tipo,
-                    FechaDesde     = desde,
-                    FechaHasta     = hasta
-                },
-                commandType: System.Data.CommandType.StoredProcedure);
+                    ProductoId = productoId,
+                    Tipo       = tipo,
+                    Desde      = desde,
+                    Hasta      = hasta
+                });
         }
 
         public async Task<IEnumerable<KardexResumen>> ObtenerResumenAsync()
         {
             using var conn = GetConnection();
             return await conn.QueryAsync<KardexResumen>(
-                "sp_ResumenKardex",
-                commandType: System.Data.CommandType.StoredProcedure);
+                "SELECT * FROM sp_resumen_kardex()");
         }
     }
 }
